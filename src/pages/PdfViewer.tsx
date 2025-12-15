@@ -18,7 +18,7 @@ export default function PdfViewer() {
   const [containerWidth, setContainerWidth] = useState(900);
   const [isLoading, setIsLoading] = useState(true);
 
-  const pdfPath = `/public/assets/${pdfName}.pdf`;
+  const pdfPath = `/assets/${pdfName}.pdf`;
 
   // Track available width of the scroll container so 100% = fit-to-width
   useEffect(() => {

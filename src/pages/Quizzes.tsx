@@ -11,7 +11,7 @@ const quizzes: QuizCard[] = [
     title: "Respiration Quiz",
     subtitle: "แก้ไขล่าสุดเมื่อ 13 นาทีที่แล้ว",
     meta: "20 ข้อ",
-    thumb: "/public/assets/Respiration.png",
+    thumb: "/assets/Respiration.png",
     slug: "respiration",
   },
 ];
