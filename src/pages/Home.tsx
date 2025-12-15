@@ -73,7 +73,7 @@ export default function Home() {
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer"
           >
             <div className="aspect-video bg-gray-200 overflow-hidden">
-              <img src="/public/assets/Respiration.png" alt="Respiration" className="w-full h-full object-cover" />
+              <img src="/assets/Respiration.png" alt="Respiration" className="w-full h-full object-cover" />
             </div>
             <div className="p-4">
               <h3 className="font-bold text-black text-lg">Respiration</h3>
@@ -85,7 +85,7 @@ export default function Home() {
           {/* Note Card 2 */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition" onClick={() => navigate("/pdf/plants")}>
             <div className="aspect-video bg-gray-200 overflow-hidden">
-              <img src="/public/assets/plants.png" alt="พืชที่น่ารัก" className="w-full h-full object-cover" />
+              <img src="/assets/plants.png" alt="พืชที่น่ารัก" className="w-full h-full object-cover" />
             </div>
             <div className="p-4">
               <h3 className="font-bold text-black text-lg">พืชที่น่ารัก</h3>
