@@ -147,7 +147,7 @@ export default function QuizDetail() {
       <div className="flex items-center justify-between p-6 border-b" style={{ backgroundColor: "#FFF7DA" }}>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/quizzes')}
             className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-200 transition text-black"
           >
             <ArrowLeft size={18} />

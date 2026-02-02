@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import WorkspaceToolbar from "@/components/WorkspaceToolbar";
 import PdfCanvas from "@/components/PdfCanvas";
 
 export default function PdfViewer() {
@@ -13,7 +14,7 @@ export default function PdfViewer() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(900);
   const [isLoading, setIsLoading] = useState(true);
@@ -132,95 +133,20 @@ export default function PdfViewer() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Top Toolbar */}
-      <div className="bg-[#FFF7DA] border-b border-gray-300 p-3 flex items-center justify-between sticky top-0 z-40 shadow-sm">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Go back (Esc)"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <h1 className="text-lg font-bold text-black capitalize hidden sm:block">
-            {pdfName}
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Search Button */}
-          <button
-            onClick={() => {
-              setShowSearch(!showSearch);
-              setTimeout(() => searchInputRef.current?.focus(), 0);
-            }}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Search (Ctrl+F)"
-          >
-            <Search size={18} />
-          </button>
-
-          {/* Zoom Controls */}
-          <button
-            onClick={handleZoomOut}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Zoom out (Ctrl+−)"
-          >
-            <ZoomOut size={18} />
-          </button>
-
-          <span className="text-sm font-semibold min-w-12 text-center px-2 py-1 bg-gray-200 rounded">
-            {Math.round(scale * 100)}%
-          </span>
-
-          <button
-            onClick={handleZoomIn}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Zoom in (Ctrl++)"
-          >
-            <ZoomIn size={18} />
-          </button>
-
-          <div className="w-px h-6 bg-gray-400 mx-1"></div>
-
-          {/* More Actions */}
-          <button
-            onClick={handleDownload}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Download PDF"
-          >
-            <Download size={18} />
-          </button>
-
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-gray-200 rounded transition"
-            title="Close"
-          >
-            <X size={20} />
-          </button>
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      {showSearch && (
-        <div className="bg-white border-b border-gray-300 p-3 flex gap-2">
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search in PDF..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={() => setShowSearch(false)}
-            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded transition"
-          >
-            Close
-          </button>
-        </div>
-      )}
+      <WorkspaceToolbar
+        title={pdfName}
+        showSearch={showSearch}
+        setShowSearch={setShowSearch}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchInputRef={searchInputRef as any}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        scale={scale}
+        onDownload={handleDownload}
+        onBack={() => navigate(-1)}
+        onClose={() => navigate(-1)}
+      />
 
       {/* PDF Content Area */}
       <div
