@@ -9,6 +9,8 @@ import Quizzes from "./pages/Quizzes";
 import QuizDetail from "./pages/QuizDetail";
 import QuizPlay from "./pages/QuizPlay";
 import QuizSummary from "./pages/QuizSummary";
+import QuizBuilder from "./pages/QuizBuilder";
+import QuizEditor from "./pages/QuizEditor";
 import Flashcards from "./pages/Flashcards";
 import FlashcardDetail from "./pages/FlashcardDetail";
 import FlashcardPlay from "./pages/FlashcardPlay";
@@ -21,6 +23,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/quizzes" element={<ProtectedRoute><Quizzes /></ProtectedRoute>} />
+        <Route path="/quiz-builder" element={<ProtectedRoute><QuizBuilder /></ProtectedRoute>} />
+        <Route path="/quiz-builder/:slug" element={<ProtectedRoute><QuizEditor /></ProtectedRoute>} />
         <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
         <Route path="/flashcard/:deckId" element={<ProtectedRoute><FlashcardDetail /></ProtectedRoute>} />
         <Route path="/flashcard/play/:deckId" element={<ProtectedRoute><FlashcardPlay /></ProtectedRoute>} />

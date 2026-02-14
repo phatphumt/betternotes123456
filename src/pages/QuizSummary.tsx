@@ -12,7 +12,7 @@ type QuizResult = {
   finishedAt: number;
   // สำหรับ list ข้อผิด
   wrong: Array<{
-    id: number;
+    id: string | number;
     text: string;
     tag?: string;
     selectedText: string;

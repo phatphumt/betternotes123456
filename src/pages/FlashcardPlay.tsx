@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, RotateCw, BookOpen, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, RotateCw, BookOpen, CheckCircle2, XCircle, ChevronLast } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Flashcard = { id: string; front: string; back: string };
@@ -33,8 +33,8 @@ export default function FlashcardPlay() {
   if (!deck || deck.cards.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#f7f3ea]">
-        <p className="text-gray-600 mb-4">No cards in this deck</p>
-        <Button onClick={() => navigate("/flashcards")}>Back to Decks</Button>
+        <p className="text-gray-600 mb-4">ไม่มีการ์ดในชุดนี้</p>
+        <Button onClick={() => navigate("/flashcards")}>กลับไปยังชุดการ์ด</Button>
       </div>
     );
   }
@@ -79,9 +79,9 @@ export default function FlashcardPlay() {
               <span className="text-sm">กลับหน้าแก้ไข</span>
             </button>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-black">Study Complete!</h1>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-black">เสร็จแล้ว!</h1>
               <div className="text-sm text-gray-700 mt-1">
-                {correctCount}/{deck.cards.length} Correct
+                {correctCount}/{deck.cards.length} ถูก
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function FlashcardPlay() {
             onClick={handleRestart}
           >
             <RotateCw size={16} />
-            Restart
+            เริ่มใหม่
           </Button>
         </div>
 
@@ -109,12 +109,12 @@ export default function FlashcardPlay() {
                   />
                   <div className="absolute inset-3 rounded-full bg-[#fff7e5] border border-[#f5e6c5]" />
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-sm text-gray-700">Score</div>
+                    <div className="text-sm text-gray-700">คะแนน</div>
                     <div className="text-3xl font-bold text-black">{completionPercentage}%</div>
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-600">Study complete!</div>
+                <div className="text-xs text-gray-600">เรียนเสร็จแล้ว!</div>
               </div>
 
               {/* Stats + Actions */}
@@ -122,22 +122,22 @@ export default function FlashcardPlay() {
                 <div className="grid grid-cols-2 gap-3">
                   <StatChip
                     icon={<CheckCircle2 size={16} />}
-                    label="Correct"
-                    value={`${correctCount} cards`}
+                    label="ถูก"
+                    value={`${correctCount} การ์ด`}
                   />
                   <StatChip
                     icon={<XCircle size={16} />}
-                    label="Incorrect"
-                    value={`${deck.cards.length - correctCount} cards`}
+                    label="ผิด"
+                    value={`${deck.cards.length - correctCount} การ์ด`}
                   />
                   <StatChip
                     icon={<BookOpen size={16} />}
-                    label="Total"
-                    value={`${deck.cards.length} cards`}
+                    label="รวม"
+                    value={`${deck.cards.length} การ์ด`}
                   />
                   <StatChip
                     icon={<CheckCircle2 size={16} />}
-                    label="Rate"
+                    label="อัตรา"
                     value={`${completionPercentage}%`}
                   />
                 </div>
@@ -147,7 +147,7 @@ export default function FlashcardPlay() {
                   onClick={handleRestart}
                 >
                   <RotateCw size={16} />
-                  Study Again
+                  เรียนอีกครั้ง
                 </Button>
 
                 <Button
@@ -156,7 +156,7 @@ export default function FlashcardPlay() {
                   onClick={() => navigate(`/flashcard/${deck.id}`)}
                 >
                   <BookOpen size={16} />
-                  Edit Deck
+                  แก้ไขชุด
                 </Button>
               </div>
             </div>
@@ -180,52 +180,53 @@ export default function FlashcardPlay() {
           </button>
           <div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-black">{deck.title}</h1>
-            <p className="text-sm text-gray-700 mt-1">Card {currentCardIdx + 1} of {deck.cards.length}</p>
+            <p className="text-sm text-gray-700 mt-1">การ์ด {currentCardIdx + 1} จาก {deck.cards.length}</p>
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="bg-white border-b p-4 px-6">
+      <div className="p-4 px-6">
         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div className="bg-[#0f766e] h-full transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <p className="text-xs text-gray-600 mt-2">{progress}% complete</p>
+        <p className="text-xs text-gray-600 mt-2">{progress}% เสร็จแล้ว</p>
       </div>
 
       {/* Card Display */}
-      <div className="flex-1 flex items-center justify-center p-6 min-h-[calc(100vh-200px)]">
+      <div className="flex-1 flex items-center justify-center p-6">
         <div
           onClick={() => setIsFlipped(!isFlipped)}
-          className="w-full max-w-2xl aspect-square bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8 transition-transform hover:scale-105 border border-yellow-200"
+          className="w-full max-w-xl aspect-square bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8 transition-transform hover:scale-105 border border-yellow-200"
         >
           <div className="text-center">
             <p className="text-xs text-gray-500 mb-4 uppercase font-semibold">
-              {isFlipped ? "Answer" : "Question"}
+              {isFlipped ? "คำตอบ" : "คำถาม"}
             </p>
             <p className="text-3xl md:text-4xl font-bold text-black text-center line-clamp-6 leading-relaxed">
               {isFlipped ? currentCard.back : currentCard.front}
             </p>
-            <p className="text-xs text-gray-500 mt-6">Click to flip</p>
+            <p className="text-xs text-gray-500 mt-6">คลิกเพื่อพลิก</p>
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="bg-white border-t p-6 flex items-center justify-center gap-4">
+      <div className="p-2 flex items-center justify-center gap-4">
         {isFlipped ? (
           <>
             <Button variant="outline" onClick={handleNext} className="border-[#0f766e] text-[#0f766e] hover:bg-[#f0fdfb] px-8 h-11">
-              Skip
+              <ChevronLast size={16}/>
+              ข้าม
             </Button>
             <Button onClick={handleCorrect} className="px-8 bg-green-600 hover:bg-green-700 h-11 flex items-center gap-2">
               <CheckCircle2 size={16} />
-              Got it
+              ถูก
             </Button>
           </>
         ) : (
           <Button onClick={() => setIsFlipped(true)} className="px-8 bg-[#0f766e] hover:bg-[#0b5f59] text-white h-11">
-            Show Answer
+            แสดงคำตอบ
           </Button>
         )}
       </div>

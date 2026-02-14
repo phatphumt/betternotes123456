@@ -1,10 +1,7 @@
 ﻿import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pen as PenIcon, Square, Trash2, MousePointer, Eraser, Wand2, ClipboardList, WalletCards } from "lucide-react";
+import { Pen as PenIcon, Square, Trash2, MousePointer, Eraser } from "lucide-react";
 import WorkspaceToolbar from "@/components/WorkspaceToolbar";
-import GenerateQuizModal from "@/components/GenerateQuizModal";
-import GenerateFlashcardModal from "@/components/GenerateFlashcardModal";
-import type { GenerateQuizResponse, GenerateFlashcardResponse } from "@/lib/aiService";
 
 type Point = { x: number; y: number };
 type BBox = { minX: number; minY: number; maxX: number; maxY: number };
@@ -70,12 +67,6 @@ const currentStrokeRef = useRef<Stroke | null>(null);
 // Selection rect
 const selStartRef = useRef<Point | null>(null);
 const [selectionRect, setSelectionRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-
-// Generate Quiz Modal
-const [showGenerateModal, setShowGenerateModal] = useState(false);
-
-// Generate Flashcard Modal
-const [showGenerateFlashcardModal, setShowGenerateFlashcardModal] = useState(false);
 
 // load & persist
 const storageKey = `note:${noteId}`;
@@ -566,71 +557,6 @@ async function exportPNG() {
 const activeClass = "bg-gray-200 rounded";
 const activeRing = "ring-2 ring-gray-400";
 
-const handleGenerateQuiz = (quiz: GenerateQuizResponse) => {
-  // Create a custom quiz in localStorage using QuizBuilder format
-  const customQuizzes = JSON.parse(localStorage.getItem("quizzes:custom") || "[]");
-  
-  // Create a slug from the title
-  const slug = quiz.title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  
-  const newQuiz = {
-    slug: slug || `quiz-${Date.now()}`,
-    title: quiz.title,
-    description: quiz.subtitle,
-    difficulty: "ปานกลาง" as const,
-    questions: quiz.questions.map((q, idx) => ({
-      id: `q-${Date.now()}-${idx}`,
-      text: q.text,
-      answers: q.answers.map((a, aidx) => ({
-        id: `a-${Date.now()}-${aidx}`,
-        text: a.text,
-        correct: a.correct,
-      })),
-      detail: q.detail,
-      tag: q.tag,
-    })),
-    createdAt: Date.now(),
-    isCustom: true as const,
-  };
-  
-  customQuizzes.push(newQuiz);
-  localStorage.setItem("quizzes:custom", JSON.stringify(customQuizzes));
-  
-  // Navigate to quiz editor to let user refine it
-  navigate(`/quiz-builder/${newQuiz.slug}`);
-};
-
-const handleGenerateFlashcards = (response: GenerateFlashcardResponse) => {
-  // Create a custom flashcard deck in localStorage using Flashcards format
-  const customDecks = JSON.parse(localStorage.getItem("flashcards:decks") || "[]");
-  
-  // Create a slug from the title
-  const slug = response.title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  
-  const newDeck = {
-    id: slug || `flashcard-${Date.now()}`,
-    title: response.title,
-    cards: response.flashcards.map((fc, idx) => ({
-      id: `fc-${Date.now()}-${idx}`,
-      front: fc.front,
-      back: fc.back,
-    })),
-    createdAt: Date.now(),
-  };
-  
-  customDecks.push(newDeck);
-  localStorage.setItem("flashcards:decks", JSON.stringify(customDecks));
-  
-  // Navigate to flashcard detail page to let user refine it
-  navigate(`/flashcard/${newDeck.id}`);
-};
-
 return (
   <div className="flex flex-col h-screen bg-gray-100">
     <WorkspaceToolbar
@@ -663,7 +589,7 @@ return (
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
             </svg>
-            <span className="text-sm text-gray-500">Loading…</span>
+            <span className="text-sm text-gray-500">LoadingΓÇª</span>
           </div>
         </div>
       )}
@@ -713,7 +639,7 @@ return (
       {/* status text */}
       <div className="mt-3 text-sm text-gray-500">
         {lastSavedTime ? `Saved ${new Date(lastSavedTime).toLocaleString()}` : "Not saved yet"}
-        {selectedIds.size > 0 ? ` · ${selectedIds.size} selected` : ""}
+        {selectedIds.size > 0 ? ` ┬╖ ${selectedIds.size} selected` : ""}
       </div>
     </div>
 
@@ -825,41 +751,7 @@ return (
           <Trash2 size={18} />
         </button>
       </div>
-
-      <div className="w-px h-6 bg-gray-300" />
-
-      {/* Generate Quiz Button */}
-      <button
-        title="สร้างแบบทดสอบจากเนื้อหา"
-        className="p-2 hover:bg-gray-200 rounded transition text-teal-600"
-        onClick={() => setShowGenerateModal(true)}
-      >
-        <ClipboardList size={18} />
-      </button>
-      <button
-        title="สร้างแฟลชการ์ดจากเนื้อหา"
-        className="p-2 hover:bg-gray-200 rounded transition text-purple-600"
-        onClick={() => setShowGenerateFlashcardModal(true)}
-      >
-        <WalletCards size={18} />
-      </button>
     </div>
-
-    {/* Generate Quiz Modal */}
-    <GenerateQuizModal
-      isOpen={showGenerateModal}
-      onClose={() => setShowGenerateModal(false)}
-      onGenerate={handleGenerateQuiz}
-      canvasRef={canvasRef}
-    />
-
-    {/* Generate Flashcard Modal */}
-    <GenerateFlashcardModal
-      isOpen={showGenerateFlashcardModal}
-      onClose={() => setShowGenerateFlashcardModal(false)}
-      onGenerate={handleGenerateFlashcards}
-      canvasRef={canvasRef}
-    />
   </div>
 );
 }

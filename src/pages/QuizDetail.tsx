@@ -3,6 +3,27 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Edit2, Trash2, RefreshCw, BookOpen, Target, Clock3, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+type Answer = { id: string; text: string; correct: boolean };
+type Question = {
+  id: string | number;
+  text: string;
+  answers: Answer[];
+  detail: string;
+  tag?: string;
+};
+
+type Quiz = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  difficulty: "ง่าย" | "ปานกลาง" | "ยาก";
+  questions: Question[];
+  createdAt?: number;
+  updatedAt?: number;
+  tip?: string;
+  isCustom?: boolean;
+};
+
 type QuizStaticInfo = {
   title: string;
   subtitle: string;
@@ -20,7 +41,7 @@ type StoredResult = {
   durationMs: number;
   finishedAt: number;
   wrong: Array<{
-    id: number;
+    id: number | string;
     text: string;
     tag?: string;
     selectedText: string;
@@ -41,6 +62,18 @@ const quizData: Record<string, QuizStaticInfo> = {
     estDuration: "15 นาที",
   },
 };
+
+// Load custom quiz from localStorage
+function loadCustomQuiz(slug: string): Quiz | null {
+  try {
+    const raw = window.localStorage.getItem("quizzes:custom");
+    if (!raw) return null;
+    const quizzes = JSON.parse(raw) as Quiz[];
+    return quizzes.find((q) => q.slug === slug) || null;
+  } catch {
+    return null;
+  }
+}
 
 function msToMinSec(ms: number) {
   const sec = Math.max(0, Math.floor(ms / 1000));
@@ -64,7 +97,29 @@ export default function QuizDetail() {
 
   const quiz = useMemo(() => {
     if (!slug) return null;
-    return quizData[slug] ?? null;
+    
+    // Try to load custom quiz first
+    const customQuiz = loadCustomQuiz(slug);
+    if (customQuiz) {
+      return {
+        title: customQuiz.title,
+        subtitle: customQuiz.subtitle,
+        questionsLabel: `จำนวน ${customQuiz.questions.length} ข้อ`,
+        tip: customQuiz.tip || "สร้างจากแบบทดสอบที่เป็นของคุณเอง",
+        difficulty: customQuiz.difficulty,
+        estDuration: "-",
+        isCustom: true,
+        customData: customQuiz,
+      };
+    }
+    
+    // Fall back to static quiz data
+    const staticQuiz = quizData[slug];
+    if (staticQuiz) {
+      return { ...staticQuiz, isCustom: false };
+    }
+    
+    return null;
   }, [slug]);
 
   // ====== Sync latest result -> history ======
@@ -164,14 +219,39 @@ export default function QuizDetail() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="secondary" className="bg-[#0f766e] text-white hover:bg-[#0b5f59] flex items-center gap-2">
-            <Edit2 size={16} />
-            <span>แก้ไข</span>
-          </Button>
-          <Button variant="destructive" className="flex items-center gap-2">
-            <Trash2 size={16} />
-            <span>ลบ</span>
-          </Button>
+          {(quiz as any).isCustom && (
+            <>
+              <Button
+                onClick={() => navigate(`/quiz-builder/${slug}`)}
+                className="bg-[#0f766e] text-white hover:bg-[#0b5f59] flex items-center gap-2"
+              >
+                <Edit2 size={16} />
+                <span>แก้ไข</span>
+              </Button>
+              <Button
+                onClick={() => {
+                  if (window.confirm("คุณแน่ใจหรือว่าต้องการลบแบบทดสอบนี้?")) {
+                    try {
+                      const raw = window.localStorage.getItem("quizzes:custom");
+                      if (raw) {
+                        const quizzes = JSON.parse(raw) as Quiz[];
+                        const updated = quizzes.filter((q) => q.slug !== slug);
+                        window.localStorage.setItem("quizzes:custom", JSON.stringify(updated));
+                        navigate("/quiz-builder");
+                      }
+                    } catch (e) {
+                      console.error("Failed to delete quiz", e);
+                    }
+                  }
+                }}
+                variant="destructive"
+                className="flex items-center gap-2"
+              >
+                <Trash2 size={16} />
+                <span>ลบ</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

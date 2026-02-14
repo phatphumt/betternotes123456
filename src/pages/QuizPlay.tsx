@@ -3,20 +3,42 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type Answer = { text: string; correct: boolean };
+type Answer = { id?: string; text: string; correct: boolean };
 type Question = {
-  id: number;
+  id: string | number;
   text: string;
   answers: Answer[];
   detail: string;
   tag?: string;
 };
 
+type Quiz = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  difficulty: "ง่าย" | "ปานกลาง" | "ยาก";
+  questions: Question[];
+  createdAt?: number;
+  updatedAt?: number;
+};
+
 type QuizResponse = {
-  id: number;
+  id: string | number;
   selectedIndex: number;
   correct: boolean;
 };
+
+// Load custom quiz from localStorage
+function loadCustomQuiz(slug: string): Quiz | null {
+  try {
+    const raw = window.localStorage.getItem("quizzes:custom");
+    if (!raw) return null;
+    const quizzes = JSON.parse(raw) as Quiz[];
+    return quizzes.find((q) => q.slug === slug) || null;
+  } catch {
+    return null;
+  }
+}
 
 const sampleQuestions: Record<string, Question[]> = {
   respiration: [
@@ -291,15 +313,23 @@ export default function QuizPlay() {
   const location = useLocation();
   const { slug } = useParams<{ slug: string }>();
 
-  const questionsAll = useMemo(
-    () => (slug && sampleQuestions[slug] ? sampleQuestions[slug] : sampleQuestions.respiration),
-    [slug]
-  );
+  const questionsAll = useMemo(() => {
+    if (!slug) return [];
+    
+    // Try to load custom quiz first
+    const customQuiz = loadCustomQuiz(slug);
+    if (customQuiz) {
+      return customQuiz.questions;
+    }
+    
+    // Fall back to static sample questions
+    return sampleQuestions[slug] ? sampleQuestions[slug] : sampleQuestions.respiration;
+  }, [slug]);
 
   // ✅ Review wrong-only mode (จาก summary)
   const { reviewOnly, wrongIds } = (location.state ?? {}) as {
     reviewOnly?: boolean;
-    wrongIds?: number[];
+    wrongIds?: (number | string)[];
   };
 
   const questions = useMemo(() => {

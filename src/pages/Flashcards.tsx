@@ -48,7 +48,7 @@ export default function Flashcards() {
     const title = newDeckTitle || "Untitled";
     const id = createSlug(title);
     if (!id || id.trim() === "") {
-      setTitleError("Please enter a deck title");
+      setTitleError("กรุณากรอกชื่อชุดการ์ด");
       return;
     }
 
@@ -69,7 +69,7 @@ export default function Flashcards() {
       navigate(`/flashcard/${id}`);
     } catch (e) {
       console.error("Failed to create deck", e);
-      setTitleError("Could not create deck");
+      setTitleError("ไม่สามารถสร้างชุดการ์ดได้");
     }
   }
 
@@ -94,17 +94,17 @@ export default function Flashcards() {
         </div>
         <Button onClick={() => setShowCreateModal(true)} className="bg-[#0f766e] text-white hover:bg-[#0b5f59] flex items-center gap-2">
           <Plus size={18} />
-          <span>New</span>
+          <span>สร้างใหม่</span>
         </Button>
       </div>
 
       {/* Main Content */}
-      <div className="p-6 flex flex-col items-center">
+      <div className="p-6 flex flex-col">
         {decks.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📚</div>
-            <p className="text-gray-600 mb-4">No flashcard decks yet</p>
-            <Button onClick={() => setShowCreateModal(true)} className="bg-[#0f766e] text-white hover:bg-[#0b5f59]">Create your first deck</Button>
+            <p className="text-gray-600 mb-4">ยังไม่มีชุดการ์ดคำศัพท์</p>
+            <Button onClick={() => setShowCreateModal(true)} className="bg-[#0f766e] text-white hover:bg-[#0b5f59]">สร้างชุดการ์ดใหม่</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
@@ -117,7 +117,7 @@ export default function Flashcards() {
                 <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-5xl mb-2">🎴</div>
-                    <div className="text-sm text-gray-600">{deck.cards.length} cards</div>
+                    <div className="text-sm text-gray-600">{deck.cards.length} การ์ด</div>
                   </div>
                 </div>
                 <div className="p-4">
@@ -131,7 +131,7 @@ export default function Flashcards() {
                     size="sm"
                   >
                     <BookOpen size={14} />
-                    Study
+                    เรียน
                   </Button>
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function Flashcards() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-xl">
-            <h3 className="text-lg font-semibold mb-4">Create New Deck</h3>
+            <h3 className="text-lg font-semibold mb-4">สร้างชุดการ์ดใหม่</h3>
             <input
               value={newDeckTitle}
               onChange={(e) => {
@@ -152,7 +152,7 @@ export default function Flashcards() {
                 setTitleError("");
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
-              placeholder="Deck title"
+              placeholder="ชื่อชุดการ์ด"
               autoFocus
             />
             {titleError && <div className="text-sm text-red-600 mb-3">{titleError}</div>}
@@ -165,9 +165,9 @@ export default function Flashcards() {
                   setTitleError("");
                 }}
               >
-                Cancel
+                ยกเลิก
               </Button>
-              <Button onClick={handleCreateDeck} className="bg-[#0f766e] text-white hover:bg-[#0b5f59]">Create</Button>
+              <Button onClick={handleCreateDeck} className="bg-[#0f766e] text-white hover:bg-[#0b5f59]">สร้าง</Button>
             </div>
           </div>
         </div>
