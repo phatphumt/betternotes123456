@@ -197,7 +197,7 @@ export default function FlashcardPlay() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div
           onClick={() => setIsFlipped(!isFlipped)}
-          className="w-full max-w-xl aspect-square bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8 transition-transform hover:scale-105 border border-yellow-200"
+          className="w-full max-w-xl aspect-square bg-linear-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-lg cursor-pointer flex items-center justify-center p-8 transition-transform hover:scale-105 border border-yellow-200"
         >
           <div className="text-center">
             <p className="text-xs text-gray-500 mb-4 uppercase font-semibold">

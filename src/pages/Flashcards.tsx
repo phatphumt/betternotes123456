@@ -114,7 +114,7 @@ export default function Flashcards() {
                 onClick={() => navigate(`/flashcard/${deck.id}`)}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer"
               >
-                <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center">
+                <div className="aspect-video bg-linear-to-br from-purple-100 to-purple-50 flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-5xl mb-2">🎴</div>
                     <div className="text-sm text-gray-600">{deck.cards.length} การ์ด</div>

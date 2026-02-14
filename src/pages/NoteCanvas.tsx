@@ -1,6 +1,6 @@
 ﻿import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pen as PenIcon, Square, Trash2, MousePointer, Eraser, Wand2, ClipboardList, WalletCards } from "lucide-react";
+import { Pen as PenIcon, Square, Trash2, MousePointer, Eraser, ClipboardList, WalletCards } from "lucide-react";
 import WorkspaceToolbar from "@/components/WorkspaceToolbar";
 import GenerateQuizModal from "@/components/GenerateQuizModal";
 import GenerateFlashcardModal from "@/components/GenerateFlashcardModal";
